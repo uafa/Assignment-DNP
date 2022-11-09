@@ -1,0 +1,85 @@
+﻿@page "/CreatePost"
+@using Domain.DTOs
+@using HttpClients.ClientInterfaces
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@inject IPostService postService;
+
+<AuthorizeView>
+    <Authorized>
+        <div class="card">
+            <h3>Create Post</h3>
+            <div class="form-group field">
+                <label>@context.User.Identity.Name</label>
+            </div>
+            <div>
+                <input id="titleField" type="text" @bind="title" placeholder="Post Title" @bind:event="oninput"/>
+            </div>
+            <div class="form-group field">
+                <textarea @bind="body" @bind:event="oninput" placeholder="Write your post here..."></textarea>
+                @if (!string.IsNullOrEmpty(msg))
+                {
+                    <label style="color: @color">@msg</label>
+                }
+            </div>
+            <div class="button-row">
+                <button @onclick="Create" disabled="@(string.IsNullOrEmpty(title))" class="acceptbtn">Post</button>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="info-container">
+        <div class="card">
+            <h2>You must be logged in to create a post!</h2>
+            <div style="width:100%; text-align:center">
+                <img class="icon" src="img/MAIKO.png"/>
+            </div>
+        </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+    
+    private string title = "";
+    private string username ="";
+    private string body = "";
+    private string msg = "";
+    private string color = "";
+
+    private async Task Create()
+    {
+        msg = "";
+
+        try
+        {
+            await postService.CreateAsync(new PostCreationDto(username, title, body));
+            username = "";
+            msg = "Post successfully created";
+            color = "green";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+            color = "red";
+        }
+    }
+
+    private bool isLoggedIn;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authState = await AuthState;
+        ClaimsPrincipal user = authState.User;
+        isLoggedIn = user.Identity != null;
+        
+        if (!isLoggedIn) return;
+        username = user.Identity!.Name!;
+    }
+
+    }

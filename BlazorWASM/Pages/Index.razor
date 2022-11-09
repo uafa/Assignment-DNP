@@ -1,0 +1,61 @@
+﻿@page "/"
+@using Domain
+@using HttpClients.ClientInterfaces
+@inject IPostService postService
+@inject NavigationManager navMgr
+
+@if (!string.IsNullOrEmpty(msg))
+{
+    <div>
+        <span>@msg</span>
+    </div>
+}
+
+@if (posts == null)
+{
+    <span>Loading..</span>
+}
+else if (!posts.Any())
+{
+    <span>No posts available yet</span>
+}
+else
+{
+    <div class="posts-container">
+        @foreach (Post post in posts)
+        {
+            <div class="post-card"  @onclick="() => OpenPost(post.PostId)">
+                <p class="outset"><b>@post.Title</b></p> 
+                <div id="username"><span class="oi oi-person" aria-hidden="true"><p>@post.User.Username</p></span></div>
+                
+                <p>@post.Body</p>
+            </div>
+        }
+    </div>
+}
+
+@code {
+
+    private IEnumerable<Post>? posts;
+    private string msg = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        msg = "";
+        try
+        {
+            posts = await postService.GetAsync(0); // because we want all of them
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+
+    private void OpenPost(int Id)
+    {
+        navMgr.NavigateTo($"/PostView/{Id}");
+    }
+
+}
