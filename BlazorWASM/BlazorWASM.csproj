@@ -16,9 +16,4 @@
       <ProjectReference Include="..\HttpCLients\HttpCLients.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="Pages\Components\LoginButton.razor.css" />
-      <Content Include="Pages\Components\RegisterButton.razor.css" />
-    </ItemGroup>
-
 </Project>

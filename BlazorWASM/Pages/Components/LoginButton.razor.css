@@ -1,4 +1,4 @@
- .button-17 {
+﻿.button-17 {
     align-items: center;
     appearance: none;
     background-color: #fff;
@@ -30,7 +30,7 @@
     width: auto;
     will-change: transform,opacity;
     z-index: 0;
-     margin-left: 5px;
+    margin-left: 5px;
 }
 
 .button-17:hover {
