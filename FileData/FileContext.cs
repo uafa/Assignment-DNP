@@ -27,15 +27,6 @@ public class FileContext
         }
     }
     
-    
-    public ICollection<Comment> Comments
-    {
-        get
-        {
-            LazyLoadData();
-            return dataContainer!.Comments;
-        }
-    }
 
     private void LazyLoadData()
     {

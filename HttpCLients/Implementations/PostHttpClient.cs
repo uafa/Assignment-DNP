@@ -32,9 +32,27 @@ public class PostHttpClient : IPostService
         return post;
     }
 
-    public async Task<IEnumerable<Post>> GetAsync(int id)
+    public async Task<Post?> GetByIdAsync(int id)
     {
         string uri = $"/posts/{id}";
+    
+        HttpResponseMessage response = await client.GetAsync(uri);
+        string content = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
+
+        Post post = JsonSerializer.Deserialize<Post>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return post;
+    }
+
+    public async Task<IEnumerable<Post>> GetAsync()
+    {
+        string uri = $"/posts";
     
         HttpResponseMessage response = await client.GetAsync(uri);
         string content = await response.Content.ReadAsStringAsync();

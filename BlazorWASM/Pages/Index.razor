@@ -44,7 +44,7 @@ else
         msg = "";
         try
         {
-            posts = await postService.GetAsync(0); // because we want all of them
+            posts = await postService.GetAsync(); 
         }
         catch (Exception e)
         {

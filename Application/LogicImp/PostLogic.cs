@@ -18,6 +18,7 @@ public class PostLogic : IPostLogic
 
     public async Task<Post> CreateAsync(PostCreationDto dto)
     {
+        SearchUserParametersDto existingUser = new SearchUserParametersDto(dto.Username);
         User? user = await userDao.GetByUsernameAsync(dto.Username);
         if (user == null)
         {
@@ -25,7 +26,13 @@ public class PostLogic : IPostLogic
         }
 
         ValidatePost(dto);
-        Post post = new Post(user, dto.Title, dto.Body);
+        Post post = new Post
+        {
+            User = user,
+            Title = dto.Title,
+            Body = dto.Body
+        };
+        
         Post created = await postDao.CreateAsync(post);
         return created;
     }
@@ -42,9 +49,14 @@ public class PostLogic : IPostLogic
         await postDao.DeleteAsync(id);
     }
 
-    public Task<IEnumerable<Post>> GetAsync(int id)
+    public Task<Post?> GetByIdAsync(int id)
     {
-        return postDao.GetAsync(id);
+        return postDao.GetByIdAsync(id);
+    }
+
+    public Task<IEnumerable<Post>> GetAsync()
+    {
+        return postDao.GetAsync();
     }
 
     private void ValidatePost(PostCreationDto dto)

@@ -16,28 +16,29 @@ public class UserLogic : IUserLogic
     
     public async Task<User> CreateAsync(UserCreationDto dto)
     {
-        User? existing = await userDao.GetByUsernameAsync(dto.Username);
+
+        User? existing = await userDao.GetByUsernameAsync(dto.Username);   
+        Console.WriteLine(existing);
         if (existing != null)
         {
             throw new Exception("Username already taken!");
         }
 
         ValidateData(dto);
-        User toCreate = new User
-        {
-            Username = dto.Username,
-            Password = dto.Password,
-            Email = dto.Email
-        };
 
-        User created = await userDao.CreateAsync(toCreate);
+        User created = await userDao.CreateAsync(dto);
 
         return created;
     }
 
-    public Task<IEnumerable<User>> GetAsync(SearchUserParametersDto searchParameters)
+    public Task<User?> GetByUsernameAsync(string username)
     {
-        return userDao.GetAsync(searchParameters);
+        return userDao.GetByUsernameAsync(username);
+    }
+
+    public Task<IEnumerable<User>> GetAsync()
+    {
+        return userDao.GetAsync();
     }
 
     private void ValidateData(UserCreationDto dto)

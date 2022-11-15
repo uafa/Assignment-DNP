@@ -6,12 +6,12 @@
     <Authorized>
         <div class="posts-container">
             <div class="post-card">
-                <p class="outset"><b>@post?.First().Title</b></p>
+                <p class="outset"><b>@post?.Title</b></p>
                 <div id="username">
                     <span class="oi oi-person" aria-hidden="true">
-                        <p>@post?.First().User.Username</p></span></div>
+                        <p>@post?.User.Username</p></span></div>
         
-                <p>@post?.First().Body</p>
+                <p>@post?.Body</p>
             </div>
         </div>
         <div class="comment">
@@ -34,7 +34,7 @@
 @code {
     [Parameter]
     public string Id { get; set; }
-    private IEnumerable<Post>? post;
+    private Post? post;
     private string msg = "";
     
     
@@ -43,7 +43,7 @@
         msg = "";
         try
         {
-            post = await postService.GetAsync(int.Parse(Id)); // because we want all of them
+            post = await postService.GetByIdAsync(int.Parse(Id));
         }
         catch (Exception e)
         {

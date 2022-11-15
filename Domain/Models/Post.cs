@@ -11,10 +11,11 @@ public class Post
     
     public DateTime TimeStamp { get; set; }
 
-    public Post(User user, string title, string body)
+    public Post(User user, string title)
     {
         User = user;
         Title = title;
-        Body = body;
     }
+    
+    public Post(){}
 }

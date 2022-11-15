@@ -54,11 +54,11 @@ public class PostsController : ControllerBase
     //See all posts
     
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<IEnumerable<Post>>> GetAsync([FromRoute] int id)
+    public async Task<ActionResult<Post?>> GetByIdAsync([FromRoute] int id)
     {
         try
         {
-            var posts = await postLogic.GetAsync(id);
+            var posts = await postLogic.GetByIdAsync(id);
             return Ok(posts);
         }
         catch (Exception e)
@@ -66,6 +66,21 @@ public class PostsController : ControllerBase
             Console.WriteLine(e);
             return StatusCode(500, e.Message);
         }
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Post>>> GetAsync()
+    {
+        try
+        {
+            var posts = await postLogic.GetAsync();
+            return Ok(posts);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        } 
     }
     
 }

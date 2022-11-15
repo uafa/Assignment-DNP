@@ -51,7 +51,12 @@ public class PostFileDao : IPostDao
 
         return Task.CompletedTask;
     }
-    
+
+    public Task<IEnumerable<Post>> GetAsync()
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<IEnumerable<Post>> GetAsync(int id)
     {
         IEnumerable<Post> posts = context.Posts.AsEnumerable();

@@ -22,11 +22,21 @@ public class UserFileDao : IUserDao
         return Task.FromResult(user);
     }
 
+    public Task<User> CreateAsync(UserCreationDto dto)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<User?> GetByUsernameAsync(string username)
     {
         User? existing = context.Users.FirstOrDefault(u =>
             u.Username.Equals(username,StringComparison.OrdinalIgnoreCase));
         return Task.FromResult(existing);
+    }
+
+    public Task<IEnumerable<User>> GetAsync()
+    {
+        throw new NotImplementedException();
     }
 
     public Task<IEnumerable<User>> GetAsync(SearchUserParametersDto searchParameters)

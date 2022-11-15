@@ -1,23 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Application.DAOinterfaces;
+using Application.LogicInterfaces;
 using Domain;
 using Domain.DTOs;
-using FileData.Repositories;
+using EfcDataAccess.DAOs;
 
 namespace WebAPI.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserLogic userLogic;
 
-    public AuthService(IUserRepository userRepository)
+    public AuthService(IUserLogic userLogic)
     {
-        _userRepository = userRepository;
+        this.userLogic = userLogic;
     }
 
-    public Task<User> ValidateUser(string username, string password)
+    public async Task<User> ValidateUser(string username, string password)
     {
-
-        User? existingUser = _userRepository.GetUser(username);
+        SearchUserParametersDto dto = new SearchUserParametersDto(username);
+        User? existingUser = await userLogic.GetByUsernameAsync(username);
         
         if (existingUser == null)
         {
@@ -29,10 +31,10 @@ public class AuthService : IAuthService
             throw new Exception("Password mismatch");
         }
 
-        return Task.FromResult(existingUser);
+        return await Task.FromResult(existingUser);
     }
 
-    public Task RegisterUser(UserCreationDto user)
+    public async Task RegisterUser(UserCreationDto user)
     {
         if (string.IsNullOrEmpty(user.Username))
         {
@@ -44,13 +46,11 @@ public class AuthService : IAuthService
             throw new ValidationException("Password cannot be empty!");
         }
         
-        User? existingUser = _userRepository.GetUser(user.Username);
+        User? existingUser = await userLogic.GetByUsernameAsync(user.Username);
         
         if (existingUser != null)
         {
             throw new Exception("Username already taken!");
         }
-
-        return _userRepository.AddUser(user);
     }
 }

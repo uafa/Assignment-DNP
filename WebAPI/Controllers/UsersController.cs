@@ -7,8 +7,7 @@ namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-
-public class UsersController: ControllerBase
+public class UsersController : ControllerBase
 {
     private readonly IUserLogic userLogic;
 
@@ -16,7 +15,7 @@ public class UsersController: ControllerBase
     {
         this.userLogic = userLogic;
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<User>> CreateAsync(UserCreationDto dto)
     {
@@ -31,15 +30,29 @@ public class UsersController: ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    
+
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetAsync([FromQuery] string? username)
+    public async Task<ActionResult<IEnumerable<User>>> GetAsync()
     {
         try
         {
-            SearchUserParametersDto parameters = new(username);
-            IEnumerable<User> users = await userLogic.GetAsync(parameters);
+            IEnumerable<User> users = await userLogic.GetAsync();
             return Ok(users);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+
+    [HttpGet("{username}")]
+    public async Task<ActionResult<User?>> GetByUsernameAsync([FromRoute] string username)
+    {
+        try
+        {
+            User? user = await userLogic.GetByUsernameAsync(username);
+            return Ok(user);
         }
         catch (Exception e)
         {
